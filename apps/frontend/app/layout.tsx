@@ -15,10 +15,10 @@ const geist = Geist({
 });
 
 export const metadata: Metadata = {
-  title: 'Resume Matcher',
-  description: 'Build your resume with Resume Matcher',
-  applicationName: 'Resume Matcher',
-  keywords: ['resume', 'matcher', 'job', 'application'],
+  title: 'Fitscore',
+  description: 'Build your resume with Fitscore',
+  applicationName: 'Fitscore',
+  keywords: ['resume', 'job', 'application', 'score', 'fit', 'career'],
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

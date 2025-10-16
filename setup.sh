@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# setup.sh - cross-platform setup for Resume Matcher
+# setup.sh - cross-platform setup for Fitscore
 #
 # Usage:
 #   ./setup.sh [--help] [--start-dev]

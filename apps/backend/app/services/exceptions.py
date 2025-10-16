@@ -3,7 +3,8 @@ from typing import Optional
 
 class ResumeNotFoundError(Exception):
     """
-    Exception raised when a resume is not found in the database.
+    Exception raised when a resume is not found in the Fitscore database.
+    This usually means the resume was not properly uploaded or processed.
     """
 
     def __init__(self, resume_id: Optional[str] = None, message: Optional[str] = None):
@@ -17,7 +18,8 @@ class ResumeNotFoundError(Exception):
 
 class JobNotFoundError(Exception):
     """
-    Exception raised when a job is not found in the database.
+    Exception raised when a job posting is not found in the Fitscore database.
+    This usually means the job description was not properly uploaded or processed.
     """
 
     def __init__(self, job_id: Optional[str] = None, message: Optional[str] = None):

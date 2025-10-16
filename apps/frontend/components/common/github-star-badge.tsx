@@ -37,7 +37,7 @@ const GitHubStarBadge = () => {
 						/>
 					</svg>
 
-					<span>Star resume matcher on</span>
+					<span>Star Fitscore on</span>
 
 					<svg
 						width="22"

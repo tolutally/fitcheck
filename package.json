@@ -1,7 +1,7 @@
 {
-    "name": "resume-matcher",
-    "version": "0.0.1",
-    "description": "Veridis Quo.",
+    "name": "fitscore",
+    "version": "1.0.0",
+    "description": "AI-powered platform that helps optimize resumes for job fit.",
     "private": true,
     "scripts": {
         "install:frontend": "cd apps/frontend && npm install",

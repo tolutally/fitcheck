@@ -8,7 +8,7 @@ from typing import List, Optional, Literal
 class Settings(BaseSettings):
     # The defaults here are just hardcoded to have 'something'. The main place to set defaults is in apps/backend/.env.sample,
     # which is copied to the user's .env file upon setup.
-    PROJECT_NAME: str = "Resume Matcher"
+    PROJECT_NAME: str = "Fitscore"
     FRONTEND_PATH: str = os.path.join(os.path.dirname(__file__), "frontend", "assets")
     ALLOWED_ORIGINS: List[str] = ["http://localhost:3000", "http://127.0.0.1:3000"]
     DB_ECHO: bool = False
@@ -19,11 +19,11 @@ class Settings(BaseSettings):
     LLM_PROVIDER: Optional[str] = "ollama"
     LLM_API_KEY: Optional[str] = None
     LLM_BASE_URL: Optional[str] = None
-    LL_MODEL: Optional[str] = "gemma3:4b"
+    LL_MODEL: Optional[str] = "gemma:2b"
     EMBEDDING_PROVIDER: Optional[str] = "ollama"
     EMBEDDING_API_KEY: Optional[str] = None
     EMBEDDING_BASE_URL: Optional[str] = None
-    EMBEDDING_MODEL: Optional[str] = "dengcao/Qwen3-Embedding-0.6B:Q8_0"
+    EMBEDDING_MODEL: Optional[str] = "all-minilm-l6-v2"  # Smaller, faster model
 
     model_config = SettingsConfigDict(
         env_file=os.path.join(os.path.dirname(__file__), os.pardir, os.pardir, ".env"),

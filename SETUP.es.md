@@ -1,6 +1,6 @@
-# Guía de Configuración Local para Resume-Matcher
+# Guía de Configuración Local para Fitscore
 
-![Instalando Resume Matcher](assets/how_to_install_resumematcher.png)
+![Instalando Fitscore](assets/how_to_install_resumematcher.png)
 
 Este documento proporciona instrucciones multiplataforma para poner en marcha el proyecto localmente.
 
@@ -28,11 +28,11 @@ make run-dev
 
 Antes de ejecutar `setup.sh`, asegúrate de tener:
 
-  - **Bash** 4.4 o superior
-  - **Node.js** ≥ v18 (incluye `npm`)
-  - **Python** ≥ 3.8 (`python3`, `pip3`)
-  - **curl** (para instalar uv y Ollama)
-  - **make** (para la integración con Makefile)
+- **Bash** 4.4 o superior
+- **Node.js** ≥ v18 (incluye `npm`)
+- **Python** ≥ 3.8 (`python3`, `pip3`)
+- **curl** (para instalar uv y Ollama)
+- **make** (para la integración con Makefile)
 
 En **macOS**, puedes instalar las herramientas que falten a través de Homebrew:
 
@@ -53,8 +53,8 @@ sudo apt update && sudo apt install -y bash nodejs npm python3 python3-pip curl 
 
 El proyecto utiliza archivos `.env` en dos niveles:
 
-1.  **`.env` raíz** — se copia desde `./.env.example` si no existe.
-2.  **`.env` del backend** — se copia desde `apps/backend/.env.sample` si no existe.
+1. **`.env` raíz** — se copia desde `./.env.example` si no existe.
+2. **`.env` del backend** — se copia desde `apps/backend/.env.sample` si no existe.
 
 Puedes personalizar cualquier variable en estos archivos antes o después de la inicialización.
 
@@ -74,20 +74,20 @@ Puedes personalizar cualquier variable en estos archivos antes o después de la 
 
 ## 📦 Pasos de Instalación
 
-1.  **Clona el repositorio**
+1. **Clona el repositorio**
 
     ```bash
     git clone https://github.com/srbhr/Resume-Matcher.git
     cd Resume-Matcher
     ```
 
-2.  **Haz que el script de configuración sea ejecutable**
+2. **Haz que el script de configuración sea ejecutable**
 
     ```bash
     chmod +x setup.sh
     ```
 
-3.  **Ejecuta la configuración**
+3. **Ejecuta la configuración**
 
     ```bash
     ./setup.sh
@@ -101,7 +101,7 @@ Puedes personalizar cualquier variable en estos archivos antes o después de la 
       - Instalar dependencias de Node.js (`npm ci`) en la raíz y en el frontend.
       - Sincronizar dependencias de Python en `apps/backend` a través de `uv sync`.
 
-4.  **(Opcional) Iniciar el desarrollo**
+4. **(Opcional) Iniciar el desarrollo**
 
     ```bash
     ./setup.sh --start-dev
@@ -112,7 +112,7 @@ Puedes personalizar cualquier variable en estos archivos antes o después de la 
 
     Presiona `Ctrl+C` para detenerlo de forma segura.
 
-5.  **Compilar para producción**
+5. **Compilar para producción**
 
     ```bash
     npm run build
@@ -124,36 +124,36 @@ Puedes personalizar cualquier variable en estos archivos antes o después de la 
 
 ## 🔨 Targets de Makefile
 
-  - **`make help`** — Muestra los targets disponibles.
-  - **`make setup`** — Ejecuta `setup.sh`.
-  - **`make run-dev`** — Inicia el servidor de desarrollo (seguro ante `SIGINT`).
-  - **`make run-prod`** — Compila para producción.
-  - **`make clean`** — Elimina los artefactos de compilación (personaliza según sea necesario).
+- **`make help`** — Muestra los targets disponibles.
+- **`make setup`** — Ejecuta `setup.sh`.
+- **`make run-dev`** — Inicia el servidor de desarrollo (seguro ante `SIGINT`).
+- **`make run-prod`** — Compila para producción.
+- **`make clean`** — Elimina los artefactos de compilación (personaliza según sea necesario).
 
 -----
 
 ## 🐞 Solución de Problemas
 
-  - **`permission denied`** (permiso denegado) en `setup.sh`:
+- **`permission denied`** (permiso denegado) en `setup.sh`:
 
-      - Ejecuta `chmod +x setup.sh`.
+  - Ejecuta `chmod +x setup.sh`.
 
-  - **`uv: command not found`** (comando no encontrado) a pesar de la instalación:
+- **`uv: command not found`** (comando no encontrado) a pesar de la instalación:
 
-      - Asegúrate de que `~/.local/bin` esté en tu `$PATH`.
+  - Asegúrate de que `~/.local/bin` esté en tu `$PATH`.
 
-  - **`ollama: command not found`** en Linux:
+- **`ollama: command not found`** en Linux:
 
-      - Verifica que el script de instalación se haya ejecutado, o instálalo manualmente a través del gestor de paquetes.
+  - Verifica que el script de instalación se haya ejecutado, o instálalo manualmente a través del gestor de paquetes.
 
-  - **Errores de `npm ci`**:
+- **Errores de `npm ci`**:
 
-      - Comprueba que tu `package-lock.json` esté sincronizado con `package.json`.
+  - Comprueba que tu `package-lock.json` esté sincronizado con `package.json`.
 
 -----
 
 ## 🖋️ Frontend
 
-  - Por favor, asegúrate de tener habilitada la opción de formatear al guardar en tu editor (o) ejecuta `npm run format` para formatear todos los cambios preparados (*staged changes*).
+- Por favor, asegúrate de tener habilitada la opción de formatear al guardar en tu editor (o) ejecuta `npm run format` para formatear todos los cambios preparados (*staged changes*).
 
 *Última actualización: 25 de mayo de 2025*

@@ -30,7 +30,7 @@ def install_dependencies():
     return True
 
 def main():
-    print("Resume Matcher - DOCX Dependencies Installer")
+    print("Fitscore - DOCX Dependencies Installer")
     print("=" * 50)
     print("This script installs missing dependencies to fix issue #409")
     print("(Error processing file conversion DocxConverter)")
@@ -44,7 +44,7 @@ def main():
     
     if install_dependencies():
         print("\nDependencies installed successfully!")
-        print("You can now test DOCX file uploads in the Resume Matcher application.")
+        print("You can now test DOCX file uploads in the Fitscore application.")
     else:
         print("\nSome dependencies failed to install.")
         print("Please check the error messages above and try installing manually:")

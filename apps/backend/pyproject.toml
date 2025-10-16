@@ -1,7 +1,7 @@
 [project]
-name = "resume-matcher-backend"
-version = "0.1.0"
-description = "Resume Matcher Backend API"
+name = "fitscore-backend"
+version = "1.0.0"
+description = "Fitscore Backend API for Resume Analysis"
 requires-python = ">=3.12"
 dependencies = [
     "aiosqlite==0.21.0",

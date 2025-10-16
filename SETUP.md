@@ -1,6 +1,6 @@
-# Local Setup Guide for Resume-Matcher
+# Local Setup Guide for Fitscore
 
-![installing_resume_matcher](assets/how_to_install_resumematcher.png)
+![installing_fitscore](assets/how_to_install_resumematcher.png)
 
 This document provides cross-platform instructions to get the project up and running locally.
 

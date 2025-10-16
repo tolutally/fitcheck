@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from functools import lru_cache
 from typing import AsyncGenerator, Generator, Optional
 
@@ -18,14 +19,21 @@ from ..models.base import Base
 
 
 class _DatabaseSettings:
-    """Pulled from environment once at import-time."""
+    """Database configuration for Fitscore backend.
+    Settings are loaded from environment variables at import time.
+    Supports both sync and async database connections."""
 
     SYNC_DATABASE_URL: str = settings.SYNC_DATABASE_URL
     ASYNC_DATABASE_URL: str = settings.ASYNC_DATABASE_URL
     DB_ECHO: bool = settings.DB_ECHO
 
+    DB_POOL_SIZE: int = int(os.getenv("DB_POOL_SIZE", "20"))
+    DB_MAX_OVERFLOW: int = int(os.getenv("DB_MAX_OVERFLOW", "10"))
+    DB_POOL_TIMEOUT: int = int(os.getenv("DB_POOL_TIMEOUT", "30"))
+    DB_POOL_RECYCLE: int = int(os.getenv("DB_POOL_RECYCLE", "1800"))
+
     DB_CONNECT_ARGS = (
-        {"check_same_thread": False} if SYNC_DATABASE_URL.startswith("sqlite") else {}
+        {"check_same_thread": False, "timeout": 30} if SYNC_DATABASE_URL.startswith("sqlite") else {}
     )
 
 
@@ -52,30 +60,33 @@ def _configure_sqlite(engine: Engine) -> None:
 
 
 @lru_cache(maxsize=1)
-def _make_sync_engine() -> Engine:
-    """Create (or return) the global synchronous Engine."""
+def get_sync_engine() -> Engine:
+    """Get or create the SQLAlchemy engine for synchronous operations."""
     engine = create_engine(
         settings.SYNC_DATABASE_URL,
         echo=settings.DB_ECHO,
-        pool_pre_ping=True,
         connect_args=settings.DB_CONNECT_ARGS,
-        future=True,
+        pool_size=settings.DB_POOL_SIZE,
+        max_overflow=settings.DB_MAX_OVERFLOW,
+        pool_timeout=settings.DB_POOL_TIMEOUT,
+        pool_recycle=settings.DB_POOL_RECYCLE,
     )
     _configure_sqlite(engine)
     return engine
 
 
 @lru_cache(maxsize=1)
-def _make_async_engine() -> AsyncEngine:
-    """Create (or return) the global asynchronous Engine."""
+def get_async_engine() -> AsyncEngine:
+    """Get or create the SQLAlchemy engine for asynchronous operations."""
     engine = create_async_engine(
         settings.ASYNC_DATABASE_URL,
         echo=settings.DB_ECHO,
-        pool_pre_ping=True,
         connect_args=settings.DB_CONNECT_ARGS,
-        future=True,
+        pool_size=settings.DB_POOL_SIZE,
+        max_overflow=settings.DB_MAX_OVERFLOW,
+        pool_timeout=settings.DB_POOL_TIMEOUT,
+        pool_recycle=settings.DB_POOL_RECYCLE,
     )
-    _configure_sqlite(engine.sync_engine)
     return engine
 
 

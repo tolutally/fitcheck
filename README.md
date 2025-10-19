@@ -177,8 +177,8 @@ EMBEDDING_MODEL=nomic-embed-text
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/fitscore.git
-cd fitscore
+git clone https://github.com/tolutally/fitcheck.git
+cd fitcheck
 
 # Install Ollama models
 ollama pull gemma:2b
@@ -552,8 +552,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Support & Contact
 
-- **Issues**: [GitHub Issues](https://github.com/yourusername/fitscore/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/yourusername/fitscore/discussions)
+- **Issues**: [GitHub Issues](https://github.com/tolutally/fitcheck/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/tolutally/fitcheck/discussions)
 - **Email**: support@clarivue.ai
 
 ---

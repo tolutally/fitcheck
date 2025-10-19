@@ -19,6 +19,8 @@ from app.core import get_db_session
 from app.services import (
     ResumeService,
     ScoreImprovementService,
+    EnhancedResumeService,
+    ImprovementService,
     ResumeNotFoundError,
     ResumeParsingError,
     ResumeValidationError,
@@ -26,6 +28,7 @@ from app.services import (
     JobParsingError,
     ResumeKeywordExtractionError,
     JobKeywordExtractionError,
+    ImprovementGenerationError,
 )
 from app.schemas.pydantic import ResumeImprovementRequest
 
@@ -284,4 +287,224 @@ async def get_resume(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Error fetching resume data",
+        )
+
+
+@resume_router.post(
+    "/process-enhanced",
+    summary="Upload Resume with FitScore AI Analysis",
+    description="Upload and analyze resume using FitScore's advanced AI algorithms for ATS optimization",
+    tags=["FitScore Enhanced Features"]
+)
+async def process_resume_enhanced(
+    request: Request,
+    file: UploadFile = File(...),
+    db: AsyncSession = Depends(get_db_session),
+):
+    """
+    Enhanced resume processing with comprehensive AI analysis.
+    
+    This endpoint:
+    1. Converts PDF/DOCX to structured data
+    2. Performs AI analysis and scoring
+    3. Generates ATS compatibility feedback
+    4. Provides improvement suggestions
+    
+    Returns enhanced resume data with AI analysis results.
+    """
+    request_id = getattr(request.state, "request_id", str(uuid4()))
+    headers = {"X-Request-ID": request_id}
+
+    # File validation (same as existing upload endpoint)
+    allowed_content_types = [
+        "application/pdf",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ]
+
+    if file.content_type not in allowed_content_types:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid file type. Only PDF and DOCX files are allowed.",
+        )
+
+    MAX_FILE_SIZE = 2 * 1024 * 1024
+    file_bytes = await file.read()
+    
+    if not file_bytes:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Empty file. Please upload a valid file.",
+        )
+
+    if len(file_bytes) > MAX_FILE_SIZE:
+        raise HTTPException(
+            status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+            detail="File size exceeds maximum allowed size of 2.0MB.",
+        )
+
+    try:
+        enhanced_service = EnhancedResumeService(db)
+        result = await enhanced_service.process_resume_with_analysis(
+            file_bytes=file_bytes,
+            file_type=file.content_type,
+            filename=file.filename
+        )
+        
+        return JSONResponse(
+            content={
+                "request_id": request_id,
+                "message": "Resume processed successfully with FitScore AI analysis",
+                "status": "success",
+                "data": result,
+                "generated_by": "FitScore by Clarivue AI"
+            },
+            headers=headers,
+        )
+
+    except ResumeValidationError as e:
+        logger.warning(f"Resume validation failed: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=str(e),
+        )
+    except Exception as e:
+        logger.error(f"Enhanced processing failed: {str(e)} - traceback: {traceback.format_exc()}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Enhanced processing failed: {str(e)}",
+        )
+
+
+@resume_router.post(
+    "/analyze-match",
+    summary="FitScore Resume-Job Matching Analysis",
+    description="Analyze resume against job requirements using FitScore's AI matching algorithms",
+    tags=["FitScore Enhanced Features"]
+)
+async def analyze_resume_job_match(
+    request: Request,
+    resume_id: str,
+    job_id: str,
+    db: AsyncSession = Depends(get_db_session),
+):
+    """
+    Comprehensive resume-job matching analysis.
+    
+    This endpoint:
+    1. Analyzes skills, experience, education, and keyword compatibility
+    2. Calculates detailed match scores
+    3. Generates specific improvement suggestions
+    4. Identifies gaps and strengths
+    
+    Args:
+        resume_id: ID of the processed resume
+        job_id: ID of the processed job
+    
+    Returns:
+        Detailed match analysis with improvement recommendations
+    """
+    request_id = getattr(request.state, "request_id", str(uuid4()))
+    headers = {"X-Request-ID": request_id}
+
+    try:
+        if not resume_id or not job_id:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Both resume_id and job_id are required",
+            )
+
+        improvement_service = ImprovementService(db)
+        result = await improvement_service.generate_improvements(
+            resume_id=resume_id,
+            job_id=job_id
+        )
+        
+        return JSONResponse(
+            content={
+                "request_id": request_id,
+                "message": "FitScore match analysis completed successfully",
+                "generated_by": "FitScore by Clarivue AI",
+                **result
+            },
+            headers=headers,
+        )
+
+    except ResumeNotFoundError as e:
+        logger.error(f"Resume not found: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(e),
+        )
+    except JobNotFoundError as e:
+        logger.error(f"Job not found: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=str(e),
+        )
+    except ImprovementGenerationError as e:
+        logger.error(f"Improvement generation failed: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(e),
+        )
+    except Exception as e:
+        logger.error(f"Match analysis failed: {str(e)} - traceback: {traceback.format_exc()}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Match analysis failed",
+        )
+
+
+@resume_router.get(
+    "/{resume_id}/matches",
+    summary="Get FitScore Match History",
+    description="Retrieve all match analyses performed for a specific resume using FitScore",
+    tags=["FitScore Enhanced Features"]
+)
+async def get_resume_match_history(
+    request: Request,
+    resume_id: str,
+    db: AsyncSession = Depends(get_db_session),
+):
+    """
+    Retrieve all match analyses performed for a specific resume.
+    
+    Args:
+        resume_id: ID of the resume to get match history for
+    
+    Returns:
+        List of all match results with scores and improvement suggestions
+    """
+    request_id = getattr(request.state, "request_id", str(uuid4()))
+    headers = {"X-Request-ID": request_id}
+
+    try:
+        if not resume_id:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="resume_id is required",
+            )
+
+        improvement_service = ImprovementService(db)
+        match_history = await improvement_service.get_match_history(resume_id)
+        
+        return JSONResponse(
+            content={
+                "request_id": request_id,
+                "message": "FitScore match history retrieved successfully",
+                "generated_by": "FitScore by Clarivue AI",
+                "data": {
+                    "resume_id": resume_id,
+                    "match_count": len(match_history),
+                    "matches": [match.dict() for match in match_history]
+                }
+            },
+            headers=headers,
+        )
+
+    except Exception as e:
+        logger.error(f"Failed to get match history: {str(e)} - traceback: {traceback.format_exc()}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to retrieve match history",
         )

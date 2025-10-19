@@ -29,6 +29,14 @@ class ProcessedResume(Base):
         nullable=False,
         index=True,
     )
+    
+    # AI analysis and scoring fields
+    ai_analysis_scores = Column(JSON, nullable=True)  # Overall analysis scores
+    ai_feedback = Column(JSON, nullable=True)  # AI-generated feedback and suggestions
+    ats_compatibility_score = Column(Integer, nullable=True)  # ATS compatibility score (0-100)
+    keyword_density_score = Column(Integer, nullable=True)  # Keyword density score (0-100)
+    structure_score = Column(Integer, nullable=True)  # Resume structure score (0-100)
+    analysis_metadata = Column(JSON, nullable=True)  # Analysis process metadata
 
     # owner_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     # owner = relationship("User", back_populates="processed_resumes")

@@ -110,3 +110,25 @@ class JobKeywordExtractionError(Exception):
             message = "Job keyword extraction failed. Cannot improve resume without job requirements."
         super().__init__(message)
         self.job_id = job_id
+
+
+class ImprovementGenerationError(Exception):
+    """
+    Exception raised when AI-powered improvement generation fails.
+    """
+
+    def __init__(self, message: Optional[str] = None):
+        if not message:
+            message = "Failed to generate resume improvements. Please try again."
+        super().__init__(message)
+
+
+class JobProcessingError(Exception):
+    """
+    Exception raised when job processing fails.
+    """
+
+    def __init__(self, message: Optional[str] = None):
+        if not message:
+            message = "Failed to process job description. Please try again."
+        super().__init__(message)

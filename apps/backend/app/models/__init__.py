@@ -3,6 +3,7 @@ from .resume import ProcessedResume, Resume
 from .user import User
 from .job import ProcessedJob, Job
 from .association import job_resume_association
+from .match import ResumeJobMatch
 
 __all__ = [
     "Base",
@@ -12,4 +13,5 @@ __all__ = [
     "User",
     "Job",
     "job_resume_association",
+    "ResumeJobMatch",
 ]

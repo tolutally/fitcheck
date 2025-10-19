@@ -8,7 +8,9 @@ from typing import List, Optional, Literal
 class Settings(BaseSettings):
     # The defaults here are just hardcoded to have 'something'. The main place to set defaults is in apps/backend/.env.sample,
     # which is copied to the user's .env file upon setup.
-    PROJECT_NAME: str = "Fitscore"
+    PROJECT_NAME: str = "FitScore by Clarivue AI"
+    PROJECT_DESCRIPTION: str = "AI-powered platform for ATS-compatible resume optimization"
+    VERSION: str = "1.0.0"
     FRONTEND_PATH: str = os.path.join(os.path.dirname(__file__), "frontend", "assets")
     ALLOWED_ORIGINS: List[str] = ["http://localhost:3000", "http://127.0.0.1:3000"]
     DB_ECHO: bool = False
@@ -23,7 +25,19 @@ class Settings(BaseSettings):
     EMBEDDING_PROVIDER: Optional[str] = "ollama"
     EMBEDDING_API_KEY: Optional[str] = None
     EMBEDDING_BASE_URL: Optional[str] = None
-    EMBEDDING_MODEL: Optional[str] = "all-minilm-l6-v2"  # Smaller, faster model
+    EMBEDDING_MODEL: Optional[str] = "nomic-embed-text"
+
+    # FitScore Enhanced Features
+    ENHANCED_ANALYSIS_ENABLED: bool = True
+    FITSCORE_BRANDING_ENABLED: bool = True
+    BULK_ANALYSIS_ENABLED: bool = True
+    ADVANCED_SCORING_ENABLED: bool = True
+    
+    # Processing Limits
+    MAX_RESUME_SIZE_MB: int = 10
+    MAX_JOB_DESCRIPTIONS_PER_REQUEST: int = 5
+    AI_PROCESSING_TIMEOUT_SECONDS: int = 60
+    BULK_ANALYSIS_LIMIT: int = 20
 
     model_config = SettingsConfigDict(
         env_file=os.path.join(os.path.dirname(__file__), os.pardir, os.pardir, ".env"),

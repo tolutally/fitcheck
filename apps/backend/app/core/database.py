@@ -94,8 +94,8 @@ def get_async_engine() -> AsyncEngine:
 # Session factories
 # ──────────────────────────────────────────────────────────────────────────────
 
-sync_engine: Engine = _make_sync_engine()
-async_engine: AsyncEngine = _make_async_engine()
+sync_engine: Engine = get_sync_engine()
+async_engine: AsyncEngine = get_async_engine()
 
 SessionLocal: sessionmaker[Session] = sessionmaker(
     bind=sync_engine,

@@ -32,6 +32,13 @@ class ProcessedJob(Base):
         nullable=False,
         index=True,
     )
+    
+    # AI analysis and scoring fields
+    ai_analysis_scores = Column(JSON, nullable=True)  # Job analysis scores
+    requirements_clarity_score = Column(Integer, nullable=True)  # Requirements clarity (0-100)
+    keyword_complexity_score = Column(Integer, nullable=True)  # Keyword complexity (0-100)
+    match_potential_score = Column(Integer, nullable=True)  # Potential for matching (0-100)
+    analysis_metadata = Column(JSON, nullable=True)  # Analysis process metadata
 
     # one-to-many relation between user and jobs
     # owner_id = Column(Integer, ForeignKey("users.id"), nullable=False)

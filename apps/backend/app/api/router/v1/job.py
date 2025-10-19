@@ -7,7 +7,7 @@ from fastapi import APIRouter, HTTPException, Depends, Request, status, Query
 from fastapi.responses import JSONResponse
 
 from app.core import get_db_session
-from app.services import JobService, JobNotFoundError
+from app.services import JobService, JobNotFoundError, EnhancedJobService
 from app.schemas.pydantic.job import JobUploadRequest
 
 job_router = APIRouter()
@@ -131,4 +131,69 @@ async def get_job(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Error fetching job data",
+        )
+
+
+@job_router.post(
+    "/process-enhanced",
+    summary="Upload Jobs with FitScore AI Analysis",
+    description="Process job descriptions using FitScore's advanced requirement extraction and categorization",
+    tags=["FitScore Enhanced Features"]
+)
+async def process_job_enhanced(
+    payload: JobUploadRequest,
+    request: Request,
+    db: AsyncSession = Depends(get_db_session),
+):
+    """
+    Enhanced job description processing with comprehensive AI analysis.
+    
+    This endpoint:
+    1. Converts job description to structured format
+    2. Performs AI analysis of requirements
+    3. Extracts detailed qualifications and skills
+    4. Generates complexity and priority scores
+    5. Provides requirement categorization
+    
+    Returns enhanced job data with AI analysis results.
+    """
+    request_id = getattr(request.state, "request_id", str(uuid4()))
+    
+    # Content type validation
+    allowed_content_types = ["application/json"]
+    content_type = request.headers.get("content-type")
+    if not content_type:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Content-Type header is missing",
+        )
+
+    if content_type not in allowed_content_types:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Invalid Content-Type. Only {', '.join(allowed_content_types)} is/are allowed.",
+        )
+
+    try:
+        enhanced_service = EnhancedJobService(db)
+        result = await enhanced_service.process_job_with_analysis(payload.model_dump())
+        
+        return {
+            "message": "Job processed successfully with FitScore AI analysis",
+            "request_id": request_id,
+            "status": "success",
+            "data": result,
+            "generated_by": "FitScore by Clarivue AI"
+        }
+
+    except AssertionError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e),
+        )
+    except Exception as e:
+        logger.error(f"Enhanced job processing failed: {str(e)} - traceback: {traceback.format_exc()}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Enhanced processing failed: {str(e)}",
         )
